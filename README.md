@@ -98,6 +98,36 @@ export DISPLAY=:0.0
 /usr/bin/xdotool key XF86AudioMicMute
 ```
 
+## Fan noise
+
+By default, the CPU fan gets pretty loud under Ubuntu. You can hear it even when there is no particular CPU activity. Thankfully, this can be fixed using NBFC, a cross-platform program for controlling laptop fan speed. There are no prebuilt Ubuntu packages, so you'll have to build from source. Here's how to do it.
+
+The app is written in C#, so you have to install the Mono project in order to build it:
+
+```
+sudo apt-get install mono-complete
+```
+
+Then check out the code from GitHub and build:
+```
+git clone https://github.com/hirschmann/nbfc
+cd nbfc
+./build.sh
+```
+
+You can now install the built binaries and activate the corresponding systemd service:
+```
+sudo mkdir /opt/nbfc
+sudo cp -r Linux/bin/ReleaseLinux/* /opt/nbfc
+sudo cp Linux/nbfc.service Linux/nbfc-sleep.service /etc/systemd/system/
+systemctl enable nbfc --now
+```
+
+Finally, tell NBFC to use the 710s configuration file. After this step, the fan noise should stop immediately.
+```
+/opt/nbfc/nbfc.exe config --apply "Lenovo Ideapad 710S"
+```
+
 ## Customisation
 
 ### NVME optimization
